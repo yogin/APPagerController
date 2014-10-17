@@ -1,0 +1,17 @@
+PODS:
+  - APPagerController (0.1.0)
+  - Kiwi (2.3.0)
+
+DEPENDENCIES:
+  - APPagerController (from `../`)
+  - Kiwi
+
+EXTERNAL SOURCES:
+  APPagerController:
+    :path: ../
+
+SPEC CHECKSUMS:
+  APPagerController: 883be163c6fa8b65059c397239942d561fb63c50
+  Kiwi: 54bece5b35564d9b8e03c608d926f1a22fcfc589
+
+COCOAPODS: 0.34.1
