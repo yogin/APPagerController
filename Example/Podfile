@@ -1,0 +1,11 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'APPagerController', :exclusive => true do
+  pod "APPagerController", :path => "../"
+end
+
+target 'Tests', :exclusive => true do
+  pod "APPagerController", :path => "../"
+
+  pod 'Kiwi'
+end
