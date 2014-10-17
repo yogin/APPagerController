@@ -2,5 +2,5 @@ FRAMEWORK_SEARCH_PATHS = "$(SDKROOT)/Developer/Library/Frameworks" $(inherited) 
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/APPagerController" "${PODS_ROOT}/Headers/Public/Kiwi"
 OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/APPagerController" -isystem "${PODS_ROOT}/Headers/Public/Kiwi"
-OTHER_LDFLAGS = -ObjC -l"Pods-Tests-APPagerController" -l"Pods-Tests-Kiwi" -framework "XCTest"
+OTHER_LDFLAGS = -ObjC -l"Pods-Tests-APPagerController" -l"Pods-Tests-Kiwi" -framework "UIKit" -framework "XCTest"
 PODS_ROOT = ${SRCROOT}/Pods
