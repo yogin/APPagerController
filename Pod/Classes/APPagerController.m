@@ -141,21 +141,13 @@
     [_titleScrollView setContentSize:CGSizeMake(titlePosX, 48)];
     [self.view addSubview:_titleScrollView];
     
-    NSLog(@"titleCenterPoints: %@", _titleCenterPoints);
-    NSLog(@"pageCenterPoints: %@", _pageCenterPoints);
+//    NSLog(@"titleCenterPoints: %@", _titleCenterPoints);
+//    NSLog(@"pageCenterPoints: %@", _pageCenterPoints);
     
     self.currentPageIndex = 0;
 }
 
 #pragma mark - UIScrollViewDelegate
-
-// NOT USED??
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-//{
-//    if (scrollView == self.pageTitleScrollView) {
-//        self.lastTitleScrollOffset = scrollView.contentOffset;
-//    }
-//}
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
@@ -179,7 +171,7 @@
         _currentPageIndex = nearestIndex;
     }
 
-    NSLog(@"_urrentPageIndex: %lu", _currentPageIndex);
+//    NSLog(@"_urrentPageIndex: %lu", _currentPageIndex);
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
@@ -296,7 +288,7 @@
         progress = offsetDistance / distanceBetweenTitlePoints;
     }
     
-    NSLog(@"progressBetweenTitlesForPoint: %.3f", progress);
+//    NSLog(@"progressBetweenTitlesForPoint: %.3f", progress);
     return progress;
 }
 
