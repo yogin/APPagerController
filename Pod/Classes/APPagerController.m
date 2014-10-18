@@ -18,7 +18,6 @@
 
 @property (nonatomic) NSUInteger titleSpacing;
 
-@property (nonatomic, strong) NSMutableArray *pageOffsetPoints;
 @property (nonatomic, strong) NSMutableArray *pageCenterPoints;
 @property (nonatomic, strong) NSMutableArray *titleCenterPoints;
 @property (nonatomic) NSUInteger currentPageIndex;
@@ -87,7 +86,6 @@
     
     // content
     
-    _pageOffsetPoints = [[NSMutableArray alloc] init];
     _pageCenterPoints = [[NSMutableArray alloc] init];
 
     _pageScrollView = [[UIScrollView alloc] initWithFrame:frame];
@@ -100,7 +98,6 @@
     [_pageViewControllers enumerateObjectsUsingBlock:^(UIViewController *vc, NSUInteger idx, BOOL *stop) {
         vc.view.frame = CGRectOffset(frame, frame.size.width * idx, 0);
         [_pageScrollView addSubview:vc.view];
-        [_pageOffsetPoints addObject:[NSValue valueWithCGPoint:vc.view.frame.origin]];
         [_pageCenterPoints addObject:[NSValue valueWithCGPoint:vc.view.center]];
     }];
     
@@ -145,10 +142,222 @@
     [self.view addSubview:_titleScrollView];
     
     NSLog(@"titleCenterPoints: %@", _titleCenterPoints);
-    NSLog(@"pageOffsetPoints: %@", _pageOffsetPoints);
     NSLog(@"pageCenterPoints: %@", _pageCenterPoints);
     
     self.currentPageIndex = 0;
+}
+
+#pragma mark - UIScrollViewDelegate
+
+// NOT USED??
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+//{
+//    if (scrollView == self.pageTitleScrollView) {
+//        self.lastTitleScrollOffset = scrollView.contentOffset;
+//    }
+//}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    CGFloat halfOffsetX = _titleScrollView.frame.size.width / 2;
+    CGPoint currentOffset = scrollView.contentOffset;
+    currentOffset.x += halfOffsetX;
+
+    if (scrollView == _titleScrollView) {
+        // mimic pagination when scrolling through titles
+        NSUInteger nearestIndex = [self indexOfNearestObject:_titleCenterPoints fromPoint:currentOffset];
+        CGPoint nearestTitlePoint = [[_titleCenterPoints objectAtIndex:nearestIndex] CGPointValue];
+        _currentPageIndex = nearestIndex;
+
+        [UIView animateWithDuration:.4f animations:^{
+            targetContentOffset->x = nearestTitlePoint.x - halfOffsetX;
+        }];
+    }
+    else if (scrollView == _pageScrollView) {
+        // this scrollView already has pagination enabled natively, so we only need to find the nearest page
+        NSUInteger nearestIndex = [self indexOfNearestObject:_pageCenterPoints fromPoint:currentOffset];
+        _currentPageIndex = nearestIndex;
+    }
+
+    NSLog(@"_urrentPageIndex: %lu", _currentPageIndex);
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGPoint currentTitlePoint = [[_titleCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
+    CGFloat pageWidth = _pageScrollView.frame.size.width;
+    CGFloat halfPageWidth = pageWidth / 2;
+    CGPoint currentContentOffset = scrollView.contentOffset;
+    currentContentOffset.x += halfPageWidth;
+
+    if (scrollView == _titleScrollView) {
+        // transfer scroll from title to content
+        
+        CGFloat progress = [self progressBetweenTitlesForPoint:currentContentOffset];
+        
+        // Calculate required page offset based on title progression
+        CGFloat contentOffsetX = pageWidth * progress;
+
+        if (currentContentOffset.x < currentTitlePoint.x) {
+            contentOffsetX *= -1;
+        }
+
+        contentOffsetX = pageWidth * _currentPageIndex + contentOffsetX;
+        
+        // Cap offset lower bound to 0
+        contentOffsetX = MAX(0, contentOffsetX);
+
+        // Cap offset upper bound
+        CGFloat maxOffset = _pageScrollView.frame.size.width * ([_pageViewControllers count] - 1);
+        contentOffsetX = MIN(maxOffset, contentOffsetX);
+
+        CGPoint newPageContentOffset = CGPointMake(roundf(contentOffsetX), 0);
+        [self updateScrollView:_pageScrollView contentOffset:newPageContentOffset];
+    }
+    else if (scrollView == _pageScrollView) {
+        // transfer scroll from content to title
+
+        CGFloat progress = [self progressBetweenPagesForPoint:currentContentOffset];
+        CGFloat contentOffset = currentTitlePoint.x + progress - halfPageWidth;
+        CGPoint newContentOffset = CGPointMake(contentOffset, 0);
+        [self updateScrollView:_titleScrollView contentOffset:newContentOffset];
+    }
+}
+
+#pragma mark - Helpers
+
+// Finds the nearest index for a given point
+- (NSUInteger)indexOfNearestObject:(NSArray *)objects fromPoint:(CGPoint)point
+{
+    __block NSUInteger index;
+    __block CGFloat distance = CGFLOAT_MAX;
+    
+    [objects enumerateObjectsUsingBlock:^(NSValue *obj, NSUInteger idx, BOOL *stop) {
+        CGPoint objectPoint = [obj CGPointValue];
+        CGFloat currentDistance = objectPoint.x > point.x ? objectPoint.x - point.x : point.x - objectPoint.x;
+        
+        if (currentDistance < distance) {
+            distance = currentDistance;
+            index = idx;
+        }
+        else {
+            // distance should go down as we get closer to it
+            // when the currentDistance gets bigger, it means we are moving away
+            *stop = YES;
+        }
+    }];
+    
+    return index;
+}
+
+// Starting from currentIndex, return the next index in the direction the point is going
+- (NSUInteger)nextIndexForObjects:(NSArray *)objects fromIndex:(NSInteger)currentIndex andPoint:(CGPoint)point
+{
+    NSUInteger nextIndex;
+    CGPoint currentPoint = [[objects objectAtIndex:currentIndex] CGPointValue];
+    
+    if (currentPoint.x < point.x) {
+        // get next
+        nextIndex = currentIndex < objects.count - 1 ? currentIndex + 1 : currentIndex;
+    }
+    else if (currentPoint.x > point.x) {
+        // get previous
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
+    }
+    else {
+        // on the point
+        nextIndex = currentIndex;
+    }
+    
+    return nextIndex;
+}
+
+// Finds how far between 2 titles a point is, returns a percent (0 <= progress <= 1)
+- (CGFloat)progressBetweenTitlesForPoint:(CGPoint)point
+{
+    CGFloat progress = 0;
+    
+    // From our last known page index, determinte the index of the next page
+    NSUInteger nextIndex = [self nextIndexForObjects:_titleCenterPoints
+                                           fromIndex:_currentPageIndex
+                                            andPoint:point];
+    
+    if (nextIndex != _currentPageIndex) {
+        CGPoint currentTitlePoint = [[_titleCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
+        CGPoint nextTitlePoint = [[_titleCenterPoints objectAtIndex:nextIndex] CGPointValue];
+        
+        // Calculate the distance between the current and the next title
+        CGFloat distanceBetweenTitlePoints = [self distanceBetweenPoint:currentTitlePoint andPoint:nextTitlePoint];
+
+        // Calculate how far have we moved from the current title
+        CGFloat offsetDistance = [self distanceBetweenPoint:point andPoint:currentTitlePoint];
+
+        // Calculate the progression between the current and next title (percent value 0 <= progress <= 1)
+        progress = offsetDistance / distanceBetweenTitlePoints;
+    }
+    
+    NSLog(@"progressBetweenTitlesForPoint: %.3f", progress);
+    return progress;
+}
+
+// Finds how far between 2 pages a point is, returns the offset we need to move the titles
+- (CGFloat)progressBetweenPagesForPoint:(CGPoint)point
+{
+    CGFloat progress = 0;
+    NSUInteger nextPageIndex = [self nextIndexForObjects:_pageCenterPoints
+                                               fromIndex:_currentPageIndex
+                                                andPoint:point];
+    
+    if (nextPageIndex != _currentPageIndex) {
+        CGPoint currentPagePoint = [[_pageCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
+        CGPoint nextPagePoint = [[_pageCenterPoints objectAtIndex:nextPageIndex] CGPointValue];
+
+        // Calculate the distance between the current and next page
+        CGFloat distanceBetweenPagePoints = [self distanceBetweenPoint:currentPagePoint andPoint:nextPagePoint];
+
+        // Calculate how far we moved from the current page
+        CGFloat offsetDistance = [self distanceBetweenPoint:point andPoint:currentPagePoint];
+
+        // Calculate the progression between the current and next page (percent value 0 <= pageProgress <= 1)
+        CGFloat pageProgress = offsetDistance / distanceBetweenPagePoints;
+
+        CGPoint currentTitlePoint = [[_titleCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
+        CGPoint nextTitlePoint = [[_titleCenterPoints objectAtIndex:nextPageIndex] CGPointValue];
+
+        if (nextTitlePoint.x > currentTitlePoint.x) {
+            progress = (nextTitlePoint.x - currentTitlePoint.x) * pageProgress;
+        }
+        else {
+            progress = (currentTitlePoint.x - nextTitlePoint.x) * pageProgress * -1;
+        }
+        
+    }
+    
+    return progress;
+}
+
+// Set a scrollview's contentOffset without triggering delegate calls
+// We don't want to trigger delegate calls here or we'll hit an infinite loop
+- (void)updateScrollView:(UIScrollView *)scrollView contentOffset:(CGPoint)point
+{
+    id scrollViewDelegate = scrollView.delegate;
+    scrollView.delegate = nil;
+    scrollView.contentOffset = point;
+    scrollView.delegate = scrollViewDelegate;
+}
+
+- (CGFloat)distanceBetweenPoint:(CGPoint)firstPoint andPoint:(CGPoint)secondPoint
+{
+    CGFloat distance;
+    
+    if (firstPoint.x > secondPoint.x) {
+        distance = firstPoint.x - secondPoint.x;
+    }
+    else {
+        distance = secondPoint.x - firstPoint.x;
+    }
+    
+    return distance;
 }
 
 @end
