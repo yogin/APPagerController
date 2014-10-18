@@ -1,6 +1,6 @@
 # APPagerController
 
-[![CI Status](http://img.shields.io/travis/Anthony Powles/APPagerController.svg?style=flat)](https://travis-ci.org/Anthony Powles/APPagerController)
+[![CI Status](http://img.shields.io/travis/yogin/APPagerController.svg?style=flat)](https://travis-ci.org/yogin/APPagerController)
 [![Version](https://img.shields.io/cocoapods/v/APPagerController.svg?style=flat)](http://cocoadocs.org/docsets/APPagerController)
 [![License](https://img.shields.io/cocoapods/l/APPagerController.svg?style=flat)](http://cocoadocs.org/docsets/APPagerController)
 [![Platform](https://img.shields.io/cocoapods/p/APPagerController.svg?style=flat)](http://cocoadocs.org/docsets/APPagerController)
