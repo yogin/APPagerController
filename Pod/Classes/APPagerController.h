@@ -18,6 +18,7 @@
 
 // Sets the spacing between each title view (default: 20)
 @property (nonatomic) NSUInteger titleSpacing;
+@property (nonatomic) NSUInteger titleScrollViewHeight;
 
 // DataSource and delegate
 @property (nonatomic, weak) id<APPagerDataSource> dataSource;

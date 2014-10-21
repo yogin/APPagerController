@@ -56,6 +56,7 @@
 {
     _pageScrollView.backgroundColor = [UIColor darkGrayColor];
     _titleSpacing = 20;
+    _titleScrollViewHeight = 48;
 }
 
 - (void)reloadData
@@ -102,7 +103,7 @@
     
     _titleCenterPoints = [[NSMutableArray alloc] init];
 
-    _titleScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(frame), 48)];
+    _titleScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(frame), _titleScrollViewHeight)];
     _titleScrollView.delegate = self;
     _titleScrollView.backgroundColor = [UIColor colorWithWhite:.5 alpha:.8];
     [_titleScrollView setPagingEnabled:NO];
@@ -114,12 +115,13 @@
     
     [_titleViews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
         CGFloat width = ceilf([self.dataSource titleViewWidthForPager:self atIndex:idx]);
+        CGFloat height = ceilf([self.dataSource titleViewHeightForPager:self atIndex:idx]);
         
         if (titlePosX == 0) {
             titlePosX = ceilf(_titleScrollView.center.x - width / 2);
         }
         
-        view.frame = CGRectMake(titlePosX, 17, width, 24);
+        view.frame = CGRectMake(titlePosX, (_titleScrollViewHeight - height) / 2, width, height);
         
         [_titleCenterPoints addObject:[NSValue valueWithCGPoint:view.center]];
         [_titleScrollView addSubview:view];
@@ -133,7 +135,7 @@
         }
     }];
     
-    [_titleScrollView setContentSize:CGSizeMake(titlePosX, 48)];
+    [_titleScrollView setContentSize:CGSizeMake(titlePosX, _titleScrollViewHeight)];
     [self.view addSubview:_titleScrollView];
     
     [self updatePageIndex:0];

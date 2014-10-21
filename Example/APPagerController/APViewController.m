@@ -90,6 +90,17 @@
     return textRect.size.width;
 }
 
+- (CGFloat)titleViewHeightForPager:(APPagerController *)source atIndex:(NSUInteger)index
+{
+    NSString *title = _pageTitles[index];
+
+    CGRect textRect = [title boundingRectWithSize:CGSizeZero
+                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                       attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14]}
+                                          context:nil];
+    
+    return textRect.size.height;
+}
 
 #pragma mark - APPagerDelegate
 
