@@ -85,4 +85,14 @@
 
 #pragma mark - APPagerDelegate
 
+- (void)pagerController:(APPagerController *)pager didSelectPageAtIndex:(NSUInteger)index
+{
+    NSLog(@"page selected %lu", index);
+}
+
+- (void)pagerController:(APPagerController *)pager didDeselectPageAtIndex:(NSUInteger)index
+{
+    NSLog(@"page deselected %lu", index);
+}
+
 @end
