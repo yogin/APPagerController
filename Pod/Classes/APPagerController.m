@@ -114,22 +114,34 @@
     __block CGFloat titlePosX = 0;
     
     [_titleViews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
-        CGFloat width = ceilf([self.dataSource titleViewWidthForPager:self atIndex:idx]);
-        CGFloat height = ceilf([self.dataSource titleViewHeightForPager:self atIndex:idx]);
+        CGRect frame = view.frame;
         
-        if (titlePosX == 0) {
-            titlePosX = ceilf(_titleScrollView.center.x - width / 2);
+        if (frame.size.width == 0 && [self.dataSource respondsToSelector:@selector(titleViewWidthForPager:atIndex:)]) {
+            frame.size.width = ceilf([self.dataSource titleViewWidthForPager:self atIndex:idx]);
         }
         
-        view.frame = CGRectMake(titlePosX, (_titleScrollViewHeight - height) / 2, width, height);
+        if (frame.size.height == 0 && [self.dataSource respondsToSelector:@selector(titleViewHeightForPager:atIndex:)]) {
+            frame.size.height = ceilf([self.dataSource titleViewHeightForPager:self atIndex:idx]);
+        }
+        
+        if (frame.size.height == 0 || frame.size.width == 0) {
+            [NSException raise:@"InvalidViewFrameSize" format:@"A view frame's size much have both a width and height greater than 0! The title view at index %lu has the following size %@", idx, NSStringFromCGSize(frame.size)];
+        }
+
+        if (titlePosX == 0) {
+            titlePosX = ceilf(_titleScrollView.center.x - frame.size.width / 2);
+        }
+        
+        frame.origin = CGPointMake(titlePosX, (_titleScrollViewHeight - frame.size.height) / 2);
+        view.frame = frame;
         
         [_titleCenterPoints addObject:[NSValue valueWithCGPoint:view.center]];
         [_titleScrollView addSubview:view];
         
-        titlePosX += width + _titleSpacing;
+        titlePosX += frame.size.width + _titleSpacing;
         
         if (idx == _titleViews.count - 1) {
-            titlePosX -= width / 2;
+            titlePosX -= frame.size.width / 2;
             titlePosX -= _titleSpacing;
             titlePosX += _titleScrollView.center.x;
         }

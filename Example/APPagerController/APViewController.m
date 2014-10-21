@@ -79,31 +79,13 @@
     UILabel *label = [[UILabel alloc] init];
     label.text = _pageTitles[index];
     label.font = [UIFont systemFontOfSize:14];
-    
+
+    label.frame = [label.text boundingRectWithSize:CGSizeZero
+                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                        attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14]}
+                                           context:nil];
+
     return label;
-}
-
-- (CGFloat)titleViewWidthForPager:(APPagerController *)source atIndex:(NSUInteger)index
-{
-    NSString *title = _pageTitles[index];
-    CGRect textRect = [title boundingRectWithSize:CGSizeZero
-                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                       attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14]}
-                                          context:nil];
-    
-    return textRect.size.width;
-}
-
-- (CGFloat)titleViewHeightForPager:(APPagerController *)source atIndex:(NSUInteger)index
-{
-    NSString *title = _pageTitles[index];
-
-    CGRect textRect = [title boundingRectWithSize:CGSizeZero
-                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                       attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14]}
-                                          context:nil];
-    
-    return textRect.size.height;
 }
 
 #pragma mark - APPagerDelegate

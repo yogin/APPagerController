@@ -17,9 +17,10 @@
 - (NSUInteger)numberOfPagesForPager:(APPagerController *)source;
 - (UIViewController *)pageControllerForPager:(APPagerController *)source atIndex:(NSUInteger)index;
 - (UIView *)titleViewForPager:(APPagerController *)source atIndex:(NSUInteger)index;
-- (CGFloat)titleViewWidthForPager:(APPagerController *)source atIndex:(NSUInteger)index;
-- (CGFloat)titleViewHeightForPager:(APPagerController *)source atIndex:(NSUInteger)index;
 
 @optional
+
+- (CGFloat)titleViewWidthForPager:(APPagerController *)source atIndex:(NSUInteger)index;
+- (CGFloat)titleViewHeightForPager:(APPagerController *)source atIndex:(NSUInteger)index;
 
 @end
