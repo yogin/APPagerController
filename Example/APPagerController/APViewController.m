@@ -114,4 +114,18 @@
     NSLog(@"page deselected %lu", index);
 }
 
+- (void)customizeLayoutForPagerController:(APPagerController *)pager
+{
+    // Example of how to change the background for the title view
+    /*
+    // remove the default transparent background color and add a custom view as a background
+    pager.titleScrollView.backgroundColor = [UIColor clearColor];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:pager.titleScrollView.frame];
+    backgroundView.backgroundColor = [UIColor lightGrayColor];
+    
+    [pager.view addSubview:backgroundView];
+    [pager.view bringSubviewToFront:pager.titleScrollView];
+     */
+}
+
 @end
