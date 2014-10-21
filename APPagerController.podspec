@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "APPagerController"
-  s.version          = "0.1.0"
+  s.version          = "1.0.0"
   s.summary          = "A controller to page horizontally between child controllers"
   s.description      = <<-DESC
                        This controller allows you to have child controllers and swipe through them horizontally.
@@ -24,5 +24,4 @@ Pod::Spec.new do |s|
 
   s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = ['UIKit']
-  # s.dependency 'AFNetworking', '~> 2.3'
 end
