@@ -28,7 +28,7 @@ it, simply add the following line to your Podfile:
 
 ## Author
 
-Anthony Powles, pod+appagercontroller@idreamz.net
+Anthony Powles
 
 ## License
 
