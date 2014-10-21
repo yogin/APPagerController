@@ -23,4 +23,7 @@
 @property (nonatomic, weak) id<APPagerDataSource> dataSource;
 @property (nonatomic, weak) id<APPagerDelegate> delegate;
 
+// Programmatically move to a specific page
+- (BOOL)moveToPageAtIndex:(NSUInteger)index;
+
 @end

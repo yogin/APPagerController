@@ -362,4 +362,28 @@
     }
 }
 
+#pragma mark - Interactions
+
+- (BOOL)moveToPageAtIndex:(NSUInteger)index
+{
+    if (index >= [_titleViews count] || _currentPageIndex == index) {
+        return NO;
+    }
+
+    CGPoint currentOffset = [[_pageCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
+    CGPoint targetOffset = [[_pageCenterPoints objectAtIndex:index] CGPointValue];
+    CGFloat distance = [self distanceBetweenPoint:currentOffset andPoint:targetOffset];
+
+    if (currentOffset.x > targetOffset.x) {
+        distance *= -1;
+    }
+
+    CGPoint newOffset = CGPointMake(currentOffset.x + distance - _pageScrollView.frame.size.width / 2, 0);
+    [_pageScrollView setContentOffset:newOffset animated:YES];
+    
+    [self updatePageIndex:index];
+
+    return YES;
+}
+
 @end

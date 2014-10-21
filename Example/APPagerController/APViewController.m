@@ -32,11 +32,19 @@
     [self.view addSubview:_pagerController.view];
     [self addChildViewController:_pagerController];
     [_pagerController didMoveToParentViewController:self];
+    
+    [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(changePage) userInfo:nil repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)changePage
+{
+    CGFloat nextIndex = arc4random() % [_pageTitles count];
+    [_pagerController moveToPageAtIndex:nextIndex];
 }
 
 #pragma mark - APPagerDataSource
