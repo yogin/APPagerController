@@ -13,6 +13,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+No dependencies.
+
 ## Installation
 
 APPagerController is available through [CocoaPods](http://cocoapods.org). To install
@@ -20,10 +22,18 @@ it, simply add the following line to your Podfile:
 
     pod "APPagerController"
 
+## Key Features
+
+* Titles can be any UIView, not just a simple string
+* Titles can have different widths and heights
+* Supports device orientation changes
+* Delegate gets notified if the current page changes
+* Minimalistic built-in layout and design, allowing greater customization
+
 ## To-Do
 
-* specs!
-* fix disparity between the 2 progressXXX methods which return different kind of data
+* Specs, specs and more specs!
+* Fix disparity between the 2 progressXXX methods which return different kind of data
 * ...
 
 ## Author
