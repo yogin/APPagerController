@@ -146,7 +146,7 @@
         }
         
         if (frame.size.height == 0 || frame.size.width == 0) {
-            [NSException raise:@"InvalidViewFrameSize" format:@"A view frame's size much have both a width and height greater than 0! The title view at index %lu has the following size %@", idx, NSStringFromCGSize(frame.size)];
+            [NSException raise:@"InvalidViewFrameSize" format:@"A view frame's size much have both a width and height greater than 0! The title view at index %lu has the following size %@", (unsigned long)idx, NSStringFromCGSize(frame.size)];
         }
 
         if (titlePosX == 0) {
