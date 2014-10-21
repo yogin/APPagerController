@@ -97,6 +97,8 @@
         // Get title view from dataSource
         [self.titleViews addObject:[self.dataSource titleViewForPager:self atIndex:i]];
     }
+    
+    [self setupLayout];
 }
 
 - (void)setupLayout

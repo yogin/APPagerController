@@ -37,6 +37,9 @@
     [self addChildViewController:_pagerController];
     [_pagerController didMoveToParentViewController:self];
     
+    _pageTitles = @[@"New!", @"Entertainment", @"Massage & Spa", @"Food", @"Shopping", @"Random"];
+    [_pagerController reloadData];
+
     [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(changePage) userInfo:nil repeats:YES];
 }
 

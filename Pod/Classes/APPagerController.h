@@ -28,4 +28,7 @@
 // Programmatically move to a specific page
 - (BOOL)moveToPageAtIndex:(NSUInteger)index animated:(BOOL)animated;
 
+// Force a reload of the data and a refresh of the layout
+- (void)reloadData;
+
 @end
