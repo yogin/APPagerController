@@ -28,6 +28,10 @@
     _pagerController = [[APPagerController alloc] init];
     _pagerController.delegate = self;
     _pagerController.dataSource = self;
+    
+    // Basic customization goes here
+    [_pagerController setTitleSpacing:15];
+    [_pagerController setTitleScrollViewHeight:40];
 
     [self.view addSubview:_pagerController.view];
     [self addChildViewController:_pagerController];

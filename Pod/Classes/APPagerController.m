@@ -55,8 +55,8 @@
 - (void)setupDefaults
 {
     _pageScrollView.backgroundColor = [UIColor darkGrayColor];
-    _titleSpacing = 20;
-    _titleScrollViewHeight = 48;
+    _titleSpacing = _titleSpacing ? _titleSpacing : 20;
+    _titleScrollViewHeight = _titleScrollViewHeight ? _titleScrollViewHeight : 48;
 }
 
 - (void)reloadData
