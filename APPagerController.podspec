@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "APPagerController"
-  s.version          = "1.0.3"
+  s.version          = "1.0.4"
   s.summary          = "A controller to page horizontally between child controllers"
   s.description      = <<-DESC
                        This controller allows you to have child controllers and swipe through them horizontally.
