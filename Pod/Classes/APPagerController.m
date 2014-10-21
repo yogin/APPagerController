@@ -144,7 +144,7 @@
 //    NSLog(@"titleCenterPoints: %@", _titleCenterPoints);
 //    NSLog(@"pageCenterPoints: %@", _pageCenterPoints);
     
-    self.currentPageIndex = 0;
+    [self updatePageIndex:0];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -159,7 +159,7 @@
         // mimic pagination when scrolling through titles
         NSUInteger nearestIndex = [self indexOfNearestObject:_titleCenterPoints fromPoint:currentOffset];
         CGPoint nearestTitlePoint = [[_titleCenterPoints objectAtIndex:nearestIndex] CGPointValue];
-        _currentPageIndex = nearestIndex;
+        [self updatePageIndex:nearestIndex];
 
         [UIView animateWithDuration:.4f animations:^{
             targetContentOffset->x = nearestTitlePoint.x - halfOffsetX;
@@ -168,7 +168,7 @@
     else if (scrollView == _pageScrollView) {
         // this scrollView already has pagination enabled natively, so we only need to find the nearest page
         NSUInteger nearestIndex = [self indexOfNearestObject:_pageCenterPoints fromPoint:currentOffset];
-        _currentPageIndex = nearestIndex;
+        [self updatePageIndex:nearestIndex];
     }
 
 //    NSLog(@"_urrentPageIndex: %lu", _currentPageIndex);
@@ -350,6 +350,22 @@
     }
     
     return distance;
+}
+
+// Set page index and notify delegate of changes
+- (void)updatePageIndex:(NSUInteger)index
+{
+    BOOL isSamePage = _currentPageIndex == index;
+
+    if (!isSamePage && [self.delegate respondsToSelector:@selector(pagerController:didDeselectPageAtIndex:)]) {
+        [self.delegate pagerController:self didDeselectPageAtIndex:_currentPageIndex];
+    }
+    
+    _currentPageIndex = index;
+    
+    if (!isSamePage && [self.delegate respondsToSelector:@selector(pagerController:didSelectPageAtIndex:)]) {
+        [self.delegate pagerController:self didSelectPageAtIndex:_currentPageIndex];
+    }
 }
 
 @end
