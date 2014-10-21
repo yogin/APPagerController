@@ -141,9 +141,6 @@
     [_titleScrollView setContentSize:CGSizeMake(titlePosX, 48)];
     [self.view addSubview:_titleScrollView];
     
-//    NSLog(@"titleCenterPoints: %@", _titleCenterPoints);
-//    NSLog(@"pageCenterPoints: %@", _pageCenterPoints);
-    
     [self updatePageIndex:0];
 }
 
@@ -152,12 +149,12 @@
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
 {
     CGFloat halfOffsetX = _titleScrollView.frame.size.width / 2;
-    CGPoint currentOffset = scrollView.contentOffset;
-    currentOffset.x += halfOffsetX;
+    CGPoint targetOffset = *targetContentOffset;
+    targetOffset.x += halfOffsetX;
 
     if (scrollView == _titleScrollView) {
         // mimic pagination when scrolling through titles
-        NSUInteger nearestIndex = [self indexOfNearestObject:_titleCenterPoints fromPoint:currentOffset];
+        NSUInteger nearestIndex = [self indexOfNearestObject:_titleCenterPoints fromPoint:targetOffset];
         CGPoint nearestTitlePoint = [[_titleCenterPoints objectAtIndex:nearestIndex] CGPointValue];
         [self updatePageIndex:nearestIndex];
 
@@ -167,11 +164,9 @@
     }
     else if (scrollView == _pageScrollView) {
         // this scrollView already has pagination enabled natively, so we only need to find the nearest page
-        NSUInteger nearestIndex = [self indexOfNearestObject:_pageCenterPoints fromPoint:currentOffset];
+        NSUInteger nearestIndex = [self indexOfNearestObject:_pageCenterPoints fromPoint:targetOffset];
         [self updatePageIndex:nearestIndex];
     }
-
-//    NSLog(@"_urrentPageIndex: %lu", _currentPageIndex);
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
