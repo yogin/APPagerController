@@ -17,6 +17,8 @@
 @property (nonatomic, strong) NSMutableArray *titleCenterPoints;
 @property (nonatomic) NSUInteger currentPageIndex;
 
+@property (nonatomic, strong) UITapGestureRecognizer *tapTitleGestureRecognizer;
+
 @end
 
 @implementation APPagerController
@@ -167,7 +169,11 @@
             titlePosX += _titleScrollView.center.x;
         }
     }];
-    
+
+    // Add Tap gesture on title scrollView so we can change pages by simply tapping on a title
+    _tapTitleGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onTitleTap:)];
+    [_titleScrollView addGestureRecognizer:_tapTitleGestureRecognizer];
+
     [_titleScrollView setContentSize:CGSizeMake(titlePosX, _titleScrollViewHeight)];
     [self.view addSubview:_titleScrollView];
 
@@ -179,6 +185,15 @@
 - (void)orientationChanged:(NSNotification *)notification
 {
     [self setupLayout];
+}
+
+#pragma mark - UIGestureRecognizer
+
+- (void)onTitleTap:(UIGestureRecognizer *)gestureRecognizer
+{
+    CGPoint tapPoint = [gestureRecognizer locationInView:_titleScrollView];
+    NSUInteger nearestTitleIndex = [self indexOfNearestObject:_titleCenterPoints fromPoint:tapPoint];
+    [self moveToPageAtIndex:nearestTitleIndex animated:YES];
 }
 
 #pragma mark - UIScrollViewDelegate
