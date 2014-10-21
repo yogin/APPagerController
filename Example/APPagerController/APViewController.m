@@ -48,7 +48,7 @@
 - (void)changePage
 {
     CGFloat nextIndex = arc4random() % [_pageTitles count];
-    [_pagerController moveToPageAtIndex:nextIndex];
+    [_pagerController moveToPageAtIndex:nextIndex animated:YES];
 }
 
 #pragma mark - APPagerDataSource

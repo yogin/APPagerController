@@ -25,6 +25,6 @@
 @property (nonatomic, weak) id<APPagerDelegate> delegate;
 
 // Programmatically move to a specific page
-- (BOOL)moveToPageAtIndex:(NSUInteger)index;
+- (BOOL)moveToPageAtIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end

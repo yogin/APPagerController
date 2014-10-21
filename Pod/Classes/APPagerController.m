@@ -378,7 +378,7 @@
 
 #pragma mark - Interactions
 
-- (BOOL)moveToPageAtIndex:(NSUInteger)index
+- (BOOL)moveToPageAtIndex:(NSUInteger)index animated:(BOOL)animated
 {
     if (index >= [_titleViews count] || _currentPageIndex == index) {
         return NO;
@@ -393,7 +393,7 @@
     }
 
     CGPoint newOffset = CGPointMake(currentOffset.x + distance - _pageScrollView.frame.size.width / 2, 0);
-    [_pageScrollView setContentOffset:newOffset animated:YES];
+    [_pageScrollView setContentOffset:newOffset animated:animated];
     
     [self updatePageIndex:index];
 
