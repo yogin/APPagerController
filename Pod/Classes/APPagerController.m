@@ -24,6 +24,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,6 +39,25 @@
     [self reloadData];
     [self setupDefaults];
     [self setupLayout];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationChanged:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:[UIDevice currentDevice]];
+}
+
+- (void)dealloc
+{
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIDeviceOrientationDidChangeNotification
+                                                  object:[UIDevice currentDevice]];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self moveToPageAtIndex:_defaultPageIndex animated:NO];
 }
 
 /*
@@ -57,6 +77,7 @@
     _pageScrollView.backgroundColor = [UIColor darkGrayColor];
     _titleSpacing = _titleSpacing ? _titleSpacing : 20;
     _titleScrollViewHeight = _titleScrollViewHeight ? _titleScrollViewHeight : 48;
+    _defaultPageIndex = _defaultPageIndex ? _defaultPageIndex : 0;
 }
 
 - (void)reloadData
@@ -149,12 +170,15 @@
     
     [_titleScrollView setContentSize:CGSizeMake(titlePosX, _titleScrollViewHeight)];
     [self.view addSubview:_titleScrollView];
-    
-    [self updatePageIndex:0];
-    
+
     if ([self.delegate respondsToSelector:@selector(customizeLayoutForPagerController:)]) {
         [self.delegate customizeLayoutForPagerController:self];
     }
+}
+
+- (void)orientationChanged:(NSNotification *)notification
+{
+    [self setupLayout];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -296,7 +320,6 @@
         progress = offsetDistance / distanceBetweenTitlePoints;
     }
     
-//    NSLog(@"progressBetweenTitlesForPoint: %.3f", progress);
     return progress;
 }
 
@@ -360,6 +383,17 @@
     return distance;
 }
 
+- (CGFloat)offsetBetweenPoint:(CGPoint)firstPoint andPoint:(CGPoint)secondPoint
+{
+    CGFloat distance = [self distanceBetweenPoint:firstPoint andPoint:secondPoint];
+    
+    if (firstPoint.x > secondPoint.x) {
+        distance *= -1;
+    }
+
+    return distance;
+}
+
 // Set page index and notify delegate of changes
 - (void)updatePageIndex:(NSUInteger)index
 {
@@ -386,15 +420,19 @@
 
     CGPoint currentOffset = [[_pageCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
     CGPoint targetOffset = [[_pageCenterPoints objectAtIndex:index] CGPointValue];
-    CGFloat distance = [self distanceBetweenPoint:currentOffset andPoint:targetOffset];
-
-    if (currentOffset.x > targetOffset.x) {
-        distance *= -1;
-    }
-
+    CGFloat distance = [self offsetBetweenPoint:currentOffset andPoint:targetOffset];
     CGPoint newOffset = CGPointMake(currentOffset.x + distance - _pageScrollView.frame.size.width / 2, 0);
     [_pageScrollView setContentOffset:newOffset animated:animated];
-    
+
+//    if (!animated) {
+//        // the call above won't trigger scrollView events so we need to update the title scrollView ourselves
+//        CGPoint currentTitleOffset = [[_titleCenterPoints objectAtIndex:_currentPageIndex] CGPointValue];
+//        CGPoint targetTitleOffset = [[_titleCenterPoints objectAtIndex:index] CGPointValue];
+//        CGFloat titleDistance = [self offsetBetweenPoint:currentTitleOffset andPoint:targetTitleOffset];
+//        CGPoint newTitleOffset = CGPointMake(currentTitleOffset.x + titleDistance - _titleScrollView.frame.size.width / 2, 0);
+//        [_titleScrollView setContentOffset:newTitleOffset animated:animated];
+//    }
+
     [self updatePageIndex:index];
 
     return YES;
