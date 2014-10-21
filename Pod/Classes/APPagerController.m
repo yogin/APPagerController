@@ -72,6 +72,18 @@
 }
 */
 
+#pragma mark - Accessors
+
+- (UIView *)viewForPageAtIndex:(NSUInteger)index
+{
+    return [_titleViews objectAtIndex:index];
+}
+
+- (UIViewController *)controllerForPageAtIndex:(NSUInteger)index
+{
+    return [_pageViewControllers objectAtIndex:index];
+}
+
 #pragma mark - View Setup
 
 - (void)setupDefaults

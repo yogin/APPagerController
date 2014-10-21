@@ -25,10 +25,14 @@
 @property (nonatomic, weak) id<APPagerDataSource> dataSource;
 @property (nonatomic, weak) id<APPagerDelegate> delegate;
 
+// Force a reload of the data and a refresh of the layout
+- (void)reloadData;
+
 // Programmatically move to a specific page
 - (BOOL)moveToPageAtIndex:(NSUInteger)index animated:(BOOL)animated;
 
-// Force a reload of the data and a refresh of the layout
-- (void)reloadData;
+// Access underlying views and controllers for a specific page
+- (UIView *)viewForPageAtIndex:(NSUInteger)index;
+- (UIViewController *)controllerForPageAtIndex:(NSUInteger)index;
 
 @end
