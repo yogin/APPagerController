@@ -10,13 +10,8 @@
 
 @interface APPagerController () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIScrollView *pageScrollView;
-@property (nonatomic, strong) UIScrollView *titleScrollView;
-
 @property (nonatomic, strong) NSMutableArray *pageViewControllers;
 @property (nonatomic, strong) NSMutableArray *titleViews;
-
-@property (nonatomic) NSUInteger titleSpacing;
 
 @property (nonatomic, strong) NSMutableArray *pageCenterPoints;
 @property (nonatomic, strong) NSMutableArray *titleCenterPoints;
@@ -40,9 +35,9 @@
 {
     [super didMoveToParentViewController:parent];
     
-    [self setupPager];
     [self reloadData];
-    [self setupPagerContent];
+    [self setupDefaults];
+    [self setupLayout];
 }
 
 /*
@@ -57,7 +52,7 @@
 
 #pragma mark - View Setup
 
-- (void)setupPager
+- (void)setupDefaults
 {
     _pageScrollView.backgroundColor = [UIColor darkGrayColor];
     _titleSpacing = 20;
@@ -80,7 +75,7 @@
     }
 }
 
-- (void)setupPagerContent
+- (void)setupLayout
 {
     CGRect frame = self.view.frame;
     
@@ -113,7 +108,7 @@
     [_titleScrollView setPagingEnabled:NO];
     [_titleScrollView setShowsVerticalScrollIndicator:NO];
     [_titleScrollView setShowsHorizontalScrollIndicator:NO];
-    //    [_titleScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
+    [_titleScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
     
     __block CGFloat titlePosX = 0;
     
@@ -142,6 +137,10 @@
     [self.view addSubview:_titleScrollView];
     
     [self updatePageIndex:0];
+    
+    if ([self.delegate respondsToSelector:@selector(customizeLayoutForPagerController:)]) {
+        [self.delegate customizeLayoutForPagerController:self];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate

@@ -12,6 +12,14 @@
 
 @interface APPagerController : UIViewController
 
+// The main UI components
+@property (nonatomic, strong) UIScrollView *pageScrollView;
+@property (nonatomic, strong) UIScrollView *titleScrollView;
+
+// Sets the spacing between each title view (default: 20)
+@property (nonatomic) NSUInteger titleSpacing;
+
+// DataSource and delegate
 @property (nonatomic, weak) id<APPagerDataSource> dataSource;
 @property (nonatomic, weak) id<APPagerDelegate> delegate;
 
