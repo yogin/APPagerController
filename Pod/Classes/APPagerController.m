@@ -15,7 +15,6 @@
 
 @property (nonatomic, strong) NSMutableArray *pageCenterPoints;
 @property (nonatomic, strong) NSMutableArray *titleCenterPoints;
-@property (nonatomic) NSUInteger currentPageIndex;
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapTitleGestureRecognizer;
 
@@ -74,6 +73,11 @@
 
 #pragma mark - Accessors
 
+- (NSUInteger)numberOfPages
+{
+    return [_pageViewControllers count];
+}
+
 - (UIView *)viewForPageAtIndex:(NSUInteger)index
 {
     return [_titleViews objectAtIndex:index];
@@ -82,6 +86,18 @@
 - (UIViewController *)controllerForPageAtIndex:(NSUInteger)index
 {
     return [_pageViewControllers objectAtIndex:index];
+}
+
+- (void)enumerateTitleAndPageWithBlock:(void (^)(UIView *title, UIViewController *page, NSUInteger index))block
+{
+    for (NSUInteger idx = 0; idx < [self numberOfPages]; ++idx) {
+        UIView *titleView = [self viewForPageAtIndex:idx];
+        UIViewController *pageController = [self controllerForPageAtIndex:idx];
+
+        if (block) {
+            block(titleView, pageController, idx);
+        }
+    }
 }
 
 #pragma mark - View Setup
