@@ -18,6 +18,8 @@
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapTitleGestureRecognizer;
 
+@property (nonatomic) UIDeviceOrientation currentDeviceOrientation;
+
 @end
 
 @implementation APPagerController
@@ -26,6 +28,7 @@
 {
     [super viewDidLoad];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    _currentDeviceOrientation = [self deviceOrientation:[[UIDevice currentDevice] orientation]];
 }
 
 - (void)didReceiveMemoryWarning
@@ -214,7 +217,20 @@
 
 - (void)orientationChanged:(NSNotification *)notification
 {
-    [self setupLayout];
+    UIDeviceOrientation orientation = [self deviceOrientation:[[UIDevice currentDevice] orientation]];
+    if (_currentDeviceOrientation != orientation) {
+        _currentDeviceOrientation = orientation;
+        [self setupLayout];
+    }
+}
+
+- (UIDeviceOrientation)deviceOrientation:(UIDeviceOrientation)orientation
+{
+    if (orientation == UIDeviceOrientationLandscapeRight || orientation == UIDeviceOrientationLandscapeLeft) {
+        return orientation;
+    }
+
+    return UIDeviceOrientationPortrait;
 }
 
 #pragma mark - UIGestureRecognizer
