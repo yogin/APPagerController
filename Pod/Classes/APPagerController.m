@@ -29,6 +29,7 @@
     [super viewDidLoad];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     _currentDeviceOrientation = [self deviceOrientation:[[UIDevice currentDevice] orientation]];
+    [self moveToPageAtIndex:_defaultPageIndex animated:NO];
 }
 
 - (void)didReceiveMemoryWarning
@@ -61,7 +62,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self moveToPageAtIndex:_defaultPageIndex animated:NO];
 }
 
 /*
