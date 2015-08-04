@@ -59,9 +59,9 @@
                                                   object:[UIDevice currentDevice]];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
 }
 
 /*
@@ -483,6 +483,7 @@
     CGPoint targetOffset = [[_pageCenterPoints objectAtIndex:index] CGPointValue];
     CGFloat distance = [self offsetBetweenPoint:currentOffset andPoint:targetOffset];
     CGPoint newOffset = CGPointMake(currentOffset.x + distance - _pageScrollView.frame.size.width / 2, 0);
+    [self updatePageIndex:index];
     [_pageScrollView setContentOffset:newOffset animated:animated];
 
 //    if (!animated) {
@@ -493,8 +494,6 @@
 //        CGPoint newTitleOffset = CGPointMake(currentTitleOffset.x + titleDistance - _titleScrollView.frame.size.width / 2, 0);
 //        [_titleScrollView setContentOffset:newTitleOffset animated:animated];
 //    }
-
-    [self updatePageIndex:index];
 
     return YES;
 }
