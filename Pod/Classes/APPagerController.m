@@ -217,11 +217,11 @@
 
 - (void)orientationChanged:(NSNotification *)notification
 {
-    UIDeviceOrientation orientation = [self deviceOrientation:[[UIDevice currentDevice] orientation]];
-    if (_currentDeviceOrientation != orientation) {
-        _currentDeviceOrientation = orientation;
-        [self setupLayout];
-    }
+//    UIDeviceOrientation orientation = [self deviceOrientation:[[UIDevice currentDevice] orientation]];
+//    if (_currentDeviceOrientation != orientation) {
+//        _currentDeviceOrientation = orientation;
+//        [self setupLayout];
+//    }
 }
 
 - (UIDeviceOrientation)deviceOrientation:(UIDeviceOrientation)orientation
@@ -483,7 +483,6 @@
     CGPoint targetOffset = [[_pageCenterPoints objectAtIndex:index] CGPointValue];
     CGFloat distance = [self offsetBetweenPoint:currentOffset andPoint:targetOffset];
     CGPoint newOffset = CGPointMake(currentOffset.x + distance - _pageScrollView.frame.size.width / 2, 0);
-    [self updatePageIndex:index];
     [_pageScrollView setContentOffset:newOffset animated:animated];
 
 //    if (!animated) {
@@ -495,6 +494,7 @@
 //        [_titleScrollView setContentOffset:newTitleOffset animated:animated];
 //    }
 
+    [self updatePageIndex:index];
 
     return YES;
 }
