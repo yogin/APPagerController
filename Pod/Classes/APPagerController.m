@@ -115,6 +115,7 @@
 
 - (void)reloadData
 {
+    _currentPageIndex = 0;
     _pageViewControllers = [[NSMutableArray alloc] init];
     _titleViews = [[NSMutableArray alloc] init];
     
