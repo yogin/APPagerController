@@ -22,4 +22,9 @@
 // Allow further customization of the initial layout without having to subclass the controller
 - (void)customizeLayoutForPagerController:(APPagerController *)pager;
 
+- (void) startDrag;
+- (void) endDrag;
+- (void) updateUnderLineWithWidth:(float)width;
+- (void) currentScrollViewProgress:(float)progress towardsIndex:(NSUInteger)nextIndex andCurrentIndex:(NSUInteger)currentIndex;
+
 @end
